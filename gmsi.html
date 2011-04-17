@@ -1,0 +1,128 @@
+<html>
+    <head>
+        <title>Paycircuit: Using Product Attributes With Gift Messaging and Special Instructions</title>
+        
+        <script type="text/javascript">
+
+            function googlecartBeforeAdd(item) {
+            //Get all the attributes of the item added to cart        
+                var attribs = item.getCustomAttributes();
+
+                for (var i in attribs) {
+                    //Obtain attributes with values
+                    //and use attribute name: value for text value
+                    if (attribs[i] != "") {
+                    var attr_val = i + ": " + attribs[i];
+                    item.setCustomAttribute(i, attr_val);
+                    }
+                }
+                return true;
+            };
+            
+            /* 
+            Function is called when "checkout" button in Google Shopping Cart is clicked
+            */
+            function googlecartOnCheckoutClick() {
+                //
+                var txt = "";
+                var txt_msg = document.getElementById("gmsi");
+                //get cart contents (items in cart)
+                var items = googlecart.getItems();
+
+                //go through each line item in cart
+                for (var i = 0; i < items.length; i++) {
+    
+                    //check if the item is active vs. removed
+                    //we only care about active items
+                    if (!items[i].isMarkedForRemoval()) {
+                        txt+=(items[i].getTitle() + "\n");
+                        //get item attributes
+                        var attrib = items[i].getCustomAttributes();
+                        
+                        for(var x in attrib) {
+                            txt+=(attrib[x] + "\n");
+                            }
+                        
+                        }
+                    }
+                    if(txt.length > 1000) {
+                        return false;
+                    }
+                    //console.log(txt);                    
+                    txt_msg.value=txt;
+                    return true;
+                };             
+                        
+</script>
+        
+        
+    </head>
+    <body>
+        <div class="product">
+    <span class="product-title">PayCircuit T-shirt</span>
+    <br />
+    Price: <span class="product-price">$29.99</span>
+    <br />
+    Description <span class="product-description">The best shirt ever</span>
+    <ul>
+        <li>Text to print on front:
+        <input class="product-attr-to" type="text" maxlength="50" /></li>
+        <li>Text to print on back:
+        <input class="product-attr-fr" type="text" maxlength="50" /></li>
+        <li>Text to print on box/packaging:
+        <input class="product-attr-msg" type="text" maxlength="150" /></li>
+    </ul>
+    <input class="product-weight" type="hidden" value="1" />
+    <div class="googlecart-add-button">
+    </div>
+</div>
+
+<div class="product" style="margin-top: 30px;">
+    <span class="product-title">PayCircuit Coffee Mug</span>
+    <br />
+    Price: <span class="product-price">$5.99</span>
+    <ul>
+        <li>Text to print around mug:
+        <input class="product-attr-to" type="text" maxlength="50" /></li>
+        <li>Text to print on bottom of mug:
+        <input class="product-attr-fr" type="text" maxlength="50" /></li>
+        <li>Text to print on box/packaging:
+        <input class="product-attr-msg" type="text" maxlength="150"/></li>
+    </ul>
+    <input class="product-weight" type="hidden" value="2" />
+    <div class="googlecart-add-button">
+    </div>
+</div>
+
+<form id="googlecart-checkout-config">
+
+        <input type="hidden" name="ccs_company_1" value="UPS" />
+        <input type="hidden" name="ccs_shipping_type_1" value="Ground" />
+        <input type="hidden" name="ccs_price_1" value="9.00" />
+        <input type="hidden" name="ccs_company_2" value="UPS" />
+        <input type="hidden" name="ccs_shipping_type_2" value="3 Day Select" />
+        <input type="hidden" name="ccs_price_2" value="18.00" />
+        <input type="hidden" name="ccs_package_ship_from_id_1" value="PayCircuit" />
+        <input type="hidden" name="ccs_package_ship_from_city_1" value="San Francisco " />
+        <input type="hidden" name="ccs_package_ship_from_region_1" value="CA" />
+        <input type="hidden" name="ccs_package_ship_from_country_1" value="US" />
+        <input type="hidden" name="ccs_package_ship_from_postal_code_1" value="94111" />
+        
+        <!-- 5% additional charge to to UPS Ground  which is ccs_shipping_type_1 -->
+        <input type="hidden" name="checkout-flow-support.merchant-checkout-flow-support.shipping-methods.carrier-calculated-shipping-1.carrier-calculated-shipping-options.carrier-calculated-shipping-option-1.additional-variable-charge-percent" value="5" />
+        
+        <!-- 2% additional charge to UPS 3 Day Select which is ccs_shipping_type_2 -->
+        <input type="hidden" name="checkout-flow-support.merchant-checkout-flow-support.shipping-methods.carrier-calculated-shipping-1.carrier-calculated-shipping-options.carrier-calculated-shipping-option-2.additional-variable-charge-percent" value="2" />
+
+        <input id="gmsi" type="hidden" name="shopping-cart.buyer-messages.delivery-instructions-1" value="" />
+
+</form>
+
+<!-- replace mid with your merchant id -->
+<!-- set post-cart-to-sandbox = false when done testing -->
+<script id="googlecart-script" type="text/javascript" src="http://checkout.google.com/seller/gsc/v2_2/cart.js?mid=302986852433793"  currency="USD" post-cart-to-sandbox="true"></script>      
+    
+    
+    
+    </body>
+</html>
